@@ -1,0 +1,20 @@
+<!-- <h2>{{hero.name | uppercase}} Details</h2>
+<div><span>id: </span>{{hero.id}}</div>
+<div>
+  <label for="name">Hero name: </label> -->
+  <!-- [(ngModel)] 는 양방향 바인딩 문법이다 -->
+  <!-- 최상위 모듈인 app.module.ts에 FormsModule을 선언해야함! -->
+  <!-- <input id="name" [(ngModel)]="hero.name" placeholder="name">
+</div> -->
+
+<h2>My Heroes</h2>
+<ul class="heroes">
+  <li *ngFor="let hero of heroes">
+    <button [class.selected]="hero===selectedHero" type="button" (click)="onSelect(hero)">
+      <span class="badge">{{ hero.id }}</span>
+      <span class="name">{{ hero.name }}</span>
+    </button>
+  </li>
+</ul>
+<app-hero-detail [hero]="selectedHero"></app-hero-detail>
+
