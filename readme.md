@@ -467,6 +467,10 @@ export class AppRoutingModule { }
      {path: 'dashboard', component: DashboardComponent}
    ]
 
+   // 추가로, 공식문서에는 나와있지 않지만, 초기 routing 작업을 하는 것으로 제작 하였을 때, app.module.ts에 AppRoutingModule이 없을 수 있다. 그래서 추가해야함
+
+   //app.module.ts
+   import { AppRoutingModule } from './app-routing.module';
    ```
 
 3. 만약 기본 경로로 추가하고 싶다면,  route 변수에 하나 더 추가
@@ -553,6 +557,361 @@ export class AppRoutingModule { }
      </div>
      <button type="button" (click)="goBack()">go back</button>
    </div>
+
+   ```
+
+7. ​
+
+
+
+
+
+#### 서버에서 데이터 받아오기
+
+알아야 할 것 HttpClient
+
+- HttpClient는 리모트 서버와 HTTP 통신을 하기위해 AnGULAR가 제공하는 서비스
+
+- 어플리케이션 전역 범위에서 HttpClient를 사용하려면 아래와 같이 설정
+
+- ```typescript
+  //app.module.ts
+  import { HttpClientModule } from '@angular/common/http';
+  ```
+
+- ```typescript
+  //app.module.ts
+  @NgModule({
+    imports: [
+      HttpClientModule,
+    ],
+  })
+  ```
+
+- 이 후, 튜토리얼을 진행하면서는 데이터를 통신할 서버가 존제하지 않아, 인-메모리 라는 WebApi를 이용하여 튜토리얼을 진행
+
+#############################################################
+
+
+
+튜토리얼상, InMemoryDataService를 http 데이터라 가정하고 진행
+
+1. 데이터를 사용 할 service에 import 함
+
+   ```typescript
+   // hero.service.ts
+   import { HttpClient, HttpHeaders } from '@angular/common/http';
+   ```
+
+2. constructor(생성자)에 주입시킴
+
+   ```typescript
+   constructor(
+     private http: HttpClient,
+     private messageService: MessageService) { }
+   ```
+
+3. 현 튜토리얼에서 자주 사용되는 MessageService를 heroService에서 webapi를 이용해 제작하기 위해 코드 작성
+
+   ```typescript
+   private log(message: string) {
+       this.messageService.add(`HeroService: ${message}`)
+     }
+
+     private heroesUrl = 'api/heroes';
+   ```
+
+4. 기존에 히어로 목록을 불러오는 함수인 getHeroes()는 로컬 파일에 있는 데이터를 불러왔다. 하지만 지금부턴 http를 통한 데이터를 불러오는 연습을 해야 하 기 때문에 http를 이용하게 끔 변환
+
+   ```typescript
+   // 기존
+   getHeroes(): Observable<Hero[]> {
+     const heroes = of(HEROES);
+     return heroes;
+   }
+
+   // 변환된 것
+   /** GET heroes from the server */
+   getHeroes(): Observable<Hero[]> {
+     return this.http.get<Hero[]>(this.heroesUrl)
+   }
+   // HttpClient 메서드는 무언가의 RxJS를 반환함 (Observable 형태로 반환)
+   // 여기서 참고. HttpClient.get()은 json 개체로 반환을 시켜주는데, 이것은 기본적으로 유형이 지정되어 있지 않기 때문에 Typescript를 이용하여 <Hero[]>를 이용하면 컴파일 시간동안 오류를 줄일 수 있다.
+   ```
+
+5. 원격 서버에서 데이터를 가져올 때 혹시 모를 **오류처리** 를 조심해야함. 오류를 포착하려면 RxJS 연산자를 통해 관찰 가능한 결과를 "파이핑"해야함
+
+   ```typescript
+   //1. 오류처리를 위해 선언
+   // hero.service.ts
+   import { catchError, map, tap }from 'rxjs/operators'
+
+   //2. 오류를 검출하기 위해 파이핑 제공
+   // hero.service.ts
+   getHeroes(): Observable<Hero[]> {
+     return this.http.get<Hero[]>(this.heroesUrl)
+     	.pipe(
+     	catchError(this.handleError<Hero[]>('getHeroes, []))
+     	)
+   }
+   // catchError()에서 오류를 가로채고, 오류를 오류 처리 기능에 전달함
+   // handleError()메서드는 오류를 보고한 다음 프로그램이 계속 작동하도록 무해한 결과를 반환시킴
+   // handleError는 메서드이니, 따로 제작해야함
+
+   //3. handleError 메서드 제작
+   private handleError<T>(operation = 'operation', result?: T) {
+     return (error: any):Observable<T> => {
+       this.log(`${operation} failed: ${error.message}`)
+       return of(result as T)
+     }
+   }
+
+   //4. tap() 연산자를 이용하여 getHeroes()메서드 제작
+   // tap()은 관찰 가능한 값을 보고 해당 값으로 작업을 수행하고 전달함으로써 이 기능을 활성화 시킴
+     getHeroes(): Observable<Hero[]> {
+       return this.http.get<Hero[]>(this.heroesUrl)
+         .pipe(
+           tap(_ => this.log('fetched heroes')),
+           catchError(this.handleError<Hero[]>('getHeroes, []'))
+         )
+     }
+
+   //5. 이와 동일하지만 id를 이용하여 url:id형태로 id에 맞는 영웅의 데이터를 찾기
+     getHero(id: number): Observable<Hero> {
+       const url = `${this.heroesUrl}/${id}`;
+       return this.http.get<Hero>(url)
+         .pipe(
+           tap(_ => this.log(`fetched hero id=${id}`)),
+           catchError(this.handleError<Hero>(`getHero id=${id}`))
+         );
+     }
+   ```
+
+
+
+#### 영웅 업데이트
+
+1. 버튼 제작
+
+   ```html
+   <button type="button" (click)="save()">save</button>
+   ```
+
+2. 함수제작
+
+   ```typescript
+   save(): void {
+     if (this.hero) {
+       this.heroService.updateHero(this.hero)
+       	.subscribe(() => this.goBack())
+     }
+   }
+   ```
+
+3. updateHero 제작
+
+   ```typescript
+   // hero.service.ts
+   updateHero(hero: Hero): Observable<any> {
+       return this.http.put(this.heroesUrl, hero, this.httpOption)
+         .pipe(
+           tap(_ => this.log(`updated hero id = ${hero.id}`)),
+           catchError(this.handleError<any>('updateHero'))
+         )
+     }
+   `
+   // 참조
+   HttpClient.put()메서드는 세 가지 매개변수를 사용
+   1. URL
+   2. 이 경우 수정된 영웅인 업데이트 할 데이터
+   3. 옵션
+
+   위에서 사용된 옵션을 제작
+   httpOptions = {
+     header: new HttpHeaders({ 'Content-Type': 'application/json' })
+   }
+   ```
+
+
+
+#### 새로운 영웅 추가
+
+1. html 추가
+
+   ```html
+   <div>
+     <label for="new-hero">Hero name: </label>
+     <input id="new-hero" #heroName />
+
+     <!-- (click) passes input value to add() and then clears the input -->
+     <button type="button" class="add-button" (click)="add(heroName.value); heroName.value=''">
+       Add hero
+     </button>
+   </div>
+   ```
+
+2. add 함수 추가
+
+   ```typescript
+   add(name: string): void {
+     name = name.trim();
+     if (!name) { return; }
+     this.heroService.addHero({ name } as Hero)
+       .subscribe(hero => {
+         this.heroes.push(hero);
+       });
+   }
+   ```
+
+3. post를 위한 addHero함수 추가
+
+   ```typescript
+   /** POST: add a new hero to the server */
+   addHero(hero: Hero): Observable<Hero> {
+     return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions).pipe(
+       tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),
+       catchError(this.handleError<Hero>('addHero'))
+     );
+   }
+   ```
+
+
+
+#### 영웅삭제
+
+1. html 제작
+
+   ```
+   <button type="button" class="delete" title="delete hero"
+     (click)="delete(hero)">x</button>
+   ```
+
+2. delete() 함수 제작
+
+   ```
+   delete(hero: Hero): void {
+     this.heroes = htis.heroes.fliter(h => h != hero);
+     this.heroService.deleteHero(hero.id).subscribe()
+   }
+   ```
+
+3. deleteHero()함수 제작
+
+   ```typescript
+   deleteHero(id: number):Observable<Hero> {
+       const url = `${this.heroesUrl}/${id}`;
+       return this.http.delete<Hero>(url, this.httpOptions)
+         .pipe(
+           tap(_ => this.log(`deleted hero id = ${id}`)),
+           catchError(this.handleError<Hero>('deleteHero'))
+         )
+     }
+   ```
+
+
+
+#### 이름으로 검색
+
+1. 서비스에 searchHeroes 제작
+
+   ```typescript
+   searchHeroes(term: string): Observable<Hero[]> {
+       if (!term.trim()) {
+         return of([]);
+       }
+       return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`)
+         .pipe(
+           tap(x => x.length ?
+             this.log(`found heroes matching ${term}`):
+             this.log(`no heroes matching "${term}"`),
+             catchError(this.handleError<Hero[]>('searchHeroes', []))
+             )
+         )
+     }
+   ```
+
+2. html 추가
+
+   ```html
+   <h2>Top Heroes</h2>
+   <div class="heroes-menu">
+     <a *ngFor="let hero of heroes" routerLink="/detail{{hero.id}}">{{hero.name}}</a>
+   </div>
+
+   <app-hero-search />
+
+   ```
+
+3. hero-search 제작
+
+   ```bash
+   ng generate component hero-search
+   ```
+
+4. html 제작
+
+   ```
+   <div id="search-component">
+     <label for="search-box">Hero Search</label>
+     <input #searchBox id="search-box" (input)="search(searchBox.value)" />
+     <ul class="search-result">
+       <li *ngFor="let hero of heroes$ | async">
+         <a routerLink="/detail/{hero.id}">
+           {{hero.name}}
+         </a>
+       </li>
+     </ul>
+   </div>
+
+   <li *ngFor="let hero of heroes$ | async">
+   // async: 영웅 목록을 반복하라는 문법
+
+   ```
+
+5. 컴포넌트 제작
+
+   ```
+   // hero-search.component.ts
+   import { Component, OnInit } from '@angular/core';
+
+   import { Observable, Subject } from 'rxjs';
+
+   import {
+      debounceTime, distinctUntilChanged, switchMap
+    } from 'rxjs/operators';
+
+   import { Hero } from '../hero';
+   import { HeroService } from '../hero.service';
+
+   @Component({
+     selector: 'app-hero-search',
+     templateUrl: './hero-search.component.html',
+     styleUrls: [ './hero-search.component.css' ]
+   })
+   export class HeroSearchComponent implements OnInit {
+     heroes$!: Observable<Hero[]>;
+     private searchTerms = new Subject<string>();
+
+     constructor(private heroService: HeroService) {}
+
+     // Push a search term into the observable stream.
+     search(term: string): void {
+       this.searchTerms.next(term);
+     }
+
+     ngOnInit(): void {
+       this.heroes$ = this.searchTerms.pipe(
+         // wait 300ms after each keystroke before considering the term
+         debounceTime(300),
+
+         // ignore new term if same as previous term
+         distinctUntilChanged(),
+
+         // switch to new search observable each time the term changes
+         switchMap((term: string) => this.heroService.searchHeroes(term)),
+       );
+     }
+   }
 
    ```
 

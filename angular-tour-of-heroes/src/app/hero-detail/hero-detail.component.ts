@@ -53,4 +53,11 @@ export class HeroDetailComponent implements OnInit {
     // 이전 페이지로 돌아가는 코드
     this.location.back();
   }
+  // 참고로, component.ts에선 return 값이 대부분 필요 없기 때문에 void를 이용하여 함수를 제작함 void를 이용하면 return을 하지 않아도 되기 때문
+  save(): void {
+    if (this.hero) {
+      this.heroService.updateHero(this.hero)
+        .subscribe(() => this.goBack())
+    }
+  }
 }
