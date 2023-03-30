@@ -3,12 +3,16 @@ body {
 }
 
 .container {
+  background-color: gray;
   display: grid;
-  grid-template-columns: 40% 60%;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1rem;
+  grid-auto-rows: minmax(10em, auto);
   margin: 0;
 }
 .container .item {
-  background-color: greenyellow;
+  opacity: 70%;
+  background-color: crimson;
 }
 .container .item img {
   border: 1px solid black;
@@ -16,7 +20,22 @@ body {
   max-height: 100px;
 }
 .container .item:nth-child(odd) {
-  background-color: crimson;
+  background-color: greenyellow;
+}
+.container .item:nth-child(5) {
+  justify-self: center;
+  align-self: center;
+}
+.container .item:nth-child(1) {
+  grid-column: 1/4;
+}
+.container .item:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2/4;
+}
+.container .item:nth-child(9) {
+  grid-column: 3;
+  grid-row: 3/5;
 }
 
 /*# sourceMappingURL=style.css.map */

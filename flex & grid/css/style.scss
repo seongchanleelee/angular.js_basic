@@ -43,11 +43,31 @@ body {
     margin: 0;
 }
 .container {
+    background-color: gray;
     display: grid;
-    grid-template-columns: 40% 60%;
+    // 자주 사용 안됨
+    // grid-template-columns: 40% 60%;
+
+    // 얘가 자주 사용됨
+    // grid-template-columns: 4fr 6fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    // grid-template-columns: repeat(3, 1fr);
+    // grid-template-columns: 200px 1fr;
+    grid-gap: 1rem;
+
+    // 모든 그리드의 사이즈를 동일하게 하기 위한 코드
+    // grid-auto-rows: 300px;
+    // 그리드 사이즈를 동일하게 했지만 안에있는 글귀가 튀어나갈 수 있음 그럴때 minmax()를 사용
+    grid-auto-rows: minmax(10em, auto);
+    
+    //grid에서도, justify나 align을 이용하여 정렬 가능
+    // justify-items: center;
+    // align-items: start;
+    
     margin: 0;
     .item {
-        background-color: greenyellow;
+        opacity: 70%;
+        background-color: crimson;
         img {
             border: 1px solid black;
             max-width: 100px;
@@ -55,6 +75,29 @@ body {
         }
     }
     .item:nth-child(odd) {
-        background-color: crimson;
+        background-color: greenyellow;
+    }
+    // 이렇게 각각 item들을 원하는 식으로 정렬 가능
+    .item:nth-child(5) {
+        justify-self: center;
+        align-self: center;
+    }
+
+    .item:nth-child(1) {
+        // 1번 아이템을 1번그리드 부터 4번 그리드 까지 늘리겠다 라는 뜻
+        grid-column: 1/4;
+    }
+
+    .item:nth-child(4) {
+        //3번 그리드 부터 시작
+        grid-column: 3;
+        // row를 2번에서 4번까지 늘림
+        grid-row: 2/4
+    }
+
+    // 위 그리드인 4와 9가 강제로 겹치게 끔 가능함
+    .item:nth-child(9) {
+        grid-column: 3;
+        grid-row: 3/5;
     }
 }
