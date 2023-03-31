@@ -1,0 +1,52 @@
+.tool-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 1px 15px 0 rgba($color: #afd9f5, $alpha: 1.0);
+
+  .logo {
+    margin-left: 50px;
+    max-width: 100px;
+    max-height: 50px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+  .nav-bar-intro {
+    flex: 8;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    li {
+      list-style: none;
+      justify-self: left;
+      font-weight: bold;
+      font-size: 17px;
+      .nav {
+        text-decoration: none;
+        color: black;
+      }
+      .nav:hover {
+        font-weight: 800;
+        color: red;
+      }
+    }
+    button {
+      font-weight: bold;
+      font-size: 17px;
+      border: none;
+      justify-content: center;
+      padding: 3px 10px 3px 10px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px 0 rgba($color: #d1d1d1, $alpha: 1.0);
+      span {
+        color: rgb(255, 126, 126)
+      }
+    }
+  }
+}

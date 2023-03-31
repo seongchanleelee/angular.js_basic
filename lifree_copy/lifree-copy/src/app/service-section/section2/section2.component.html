@@ -1,0 +1,132 @@
+<div>
+  <p class="title"><span>라이프리 앱</span>회원 서비스</p>
+  <p class="sub-title">모든 사용자들을 위한 차별화된 서비스</p>
+  <ul class="tab-menu">
+    <!-- 클릭 이벤트 넣어주기 -->
+    <li (click)="getClass()" [ngClass]="changeView()">
+      <div class="img-box">
+        <div class="padding" *ngIf="!val">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/2170/2170024.png" alt="search">
+          <div>
+            보험금 확인
+          </div>
+        </div>
+        <div class="padding" *ngIf="val">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/2170/2170040.png" alt="search active">
+          <div>
+            보험금 확인
+          </div>
+        </div>
+
+      </div>
+    </li>
+    <li (click)="getClass1()" [ngClass]="changeView1()">
+      <div class="img-box">
+        <div class="padding" *ngIf="!val1">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/4843/4843981.png" alt="headache">
+          <div>
+            질병정보 확인
+          </div>
+        </div>
+        <div class="padding" *ngIf="val1">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/4843/4843993.png" alt="headache active">
+          <div>
+            질병정보 확인
+          </div>
+          <!-- <p class="title">어려운 수술용어를</p>
+          <p class="sub-title">손쉽게 이해</p>
+          <p class="discription">수술명 검색시 해당 수술로 인한 “병원치료비”,<br> “수술 및 관련질병” 정보를 제공하며,<br> 내 위치를 기반으로 치료받을 수 있는<br> 병원정보를 제공합니다.</p>
+          <p class="sub-discription">이를 통해 고객이 질병이나 수술로 인한<br>불안한 미래를 미리 준비할 수 있습니다.</p> -->
+        </div>
+      </div>
+    </li>
+    <li (click)="getClass2()" [ngClass]="changeView2()">
+      <div class="img-box">
+        <div class="padding" *ngIf="!val2">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/3063/3063138.png" alt="hospital">
+        <div>
+          변액보험 관리
+        </div>
+        </div>
+        <div class="padding" *ngIf="val2">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/3063/3063176.png" alt="hospital active">
+        <div>
+          변액보험 관리
+        </div>
+        <!-- <p class="title">AI 기반 인슈봇 서비스</p>
+          <p class="sub-title">손쉽게 이해</p>
+          <p class="discription">20여개 생명보험회사에서 판매하는<br> “변액보험 정보”를 제공하며<br> “변액보험 펀드” 수익율을 실시간으로<br> 확인할 수 있습니다.</p>
+          <p class="sub-discription">펀드 포트폴리오 추천 서비스”를 통해<br>좀더 안정적으로 내 변액보험 관리가 가능합니다.</p> -->
+        </div>
+      </div>
+    </li>
+    <li (click)="getClass3()" [ngClass]="changeView3()">
+      <div class="img-box">
+        <div class="padding" *ngIf="!val3">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/4474/4474449.png" alt="community">
+          <div>
+            내 설계사
+          </div>
+        </div>
+        <div class="padding" *ngIf="val3">
+          <img class="li-img" src="https://cdn-icons-png.flaticon.com/512/4474/4474452.png" alt="community active">
+          <div>
+            내 설계사
+          </div>
+          <!-- <p class="title">프리톡 기반의</p>
+          <p class="sub-title">온라인 커뮤니케이션</p>
+          <p class="discription">원하는 설계사를 직접 선택할 수 있으며,<br> 보험관련 궁금한 사항에 대해 “내설계사” 와의<br> 실시간 커뮤니케이션(“프리톡”)이 가능합니다.</p>
+          <p class="sub-discription">“병원비 영수증” 메뉴를 통해 보험금 청구에 필요한 서류를 보관 후<br>“내설계사”에게 전송 가능합니다.</p> -->
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <span class="img-service">
+    <img src="https://lifree1.com/assets/images/landing-section2-tab-phone.png" alt="">
+  </span>
+  <div *ngIf="val">
+    <p class="title">국내최초</p>
+    <p class="sub-title">보험금 정보검색 서비스</p>
+    <p class="discription">내가 가입한 보험정보를 한 눈에 확인 가능하며,<br> 수술명 검색시 해당 수술로 인해 내가 받을 수 있는<br> "수술 보험금"과 "진단 보험금" 정보를 실시간 으로<br> 확인 할 수 있습니다.</p>
+    <p class="sub-discription">“내보험금”과 “평균보험금” 과의 비교를 통해<br> 내가 가입한 보험의 합리성을 스스로 판단할 수 있습니다.</p>
+  </div>
+
+  <div *ngIf="val1">
+    <p class="title">어려운 수술용어를</p>
+    <p class="sub-title">손쉽게 이해</p>
+    <p class="discription">수술명 검색시 해당 수술로 인한 “병원치료비”,<br> “수술 및 관련질병” 정보를 제공하며,<br> 내 위치를 기반으로 치료받을 수 있는<br> 병원정보를 제공합니다.</p>        <p class="sub-discription">이를 통해 고객이 질병이나 수술로 인한<br>불안한 미래를 미리 준비할 수 있습니다.</p>
+    <p class="sub-discription">이를 통해 고객이 질병이나 수술로 인한<br>불안한 미래를 미리 준비할 수 있습니다.</p>
+  </div>
+
+  <div *ngIf="val2">
+    <p class="title">AI 기반 인슈봇 서비스</p>
+    <!-- <p class="sub-title">손쉽게 이해</p> -->
+    <p class="discription">20여개 생명보험회사에서 판매하는<br> “변액보험 정보”를 제공하며<br> “변액보험 펀드” 수익율을 실시간으로<br> 확인할 수 있습니다.</p>
+    <p class="sub-discription">펀드 포트폴리오 추천 서비스”를 통해<br>좀더 안정적으로 내 변액보험 관리가 가능합니다.</p>
+  </div>
+  <div *ngIf="val3">
+    <p class="title">프리톡 기반의</p>
+    <p class="sub-title">온라인 커뮤니케이션</p>
+    <p class="discription">원하는 설계사를 직접 선택할 수 있으며,<br> 보험관련 궁금한 사항에 대해 “내설계사” 와의<br> 실시간 커뮤니케이션(“프리톡”)이 가능합니다.</p>
+    <p class="sub-discription">“병원비 영수증” 메뉴를 통해 보험금 청구에 필요한 서류를 보관 후<br>“내설계사”에게 전송 가능합니다.</p>
+  </div>
+<!--
+  <span class="img-service">
+    <img src="https://lifree1.com/assets/images/landing-section2-tab-phone.png" alt="">
+  </span> -->
+
+  <div class="btn-group">
+    <div>
+      <a class="app-btn" type="button" href="https://play.google.com/store/apps/details?id=com.lifree1.app">
+        <img src="https://lifree1.com/assets/images/icons/icon-google-play.png" alt="">Google Play
+      </a>
+    </div>
+
+    <div>
+      <a class="app-btn" type="button" href="https://apps.apple.com/us/app/%EB%9D%BC%EC%9D%B4%ED%94%84%EB%A6%AC/id1508332052?l=ko&ls=1">
+        <img src="https://lifree1.com/assets/images/icons/icon-app-store.png" alt=""> App Store
+      </a>
+    </div>
+  </div>
+</div>
