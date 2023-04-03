@@ -916,3 +916,177 @@ export class AppRoutingModule { }
    ```
 
    ​
+
+   ### tlqkf ㄹㅇ ROUTER 로직
+
+   1. 컴포넌트를 생성한다
+
+   2. app.module.ts에! RouterModule을 넣어준다!
+
+      ```typescript
+      import { Routes, RouterModule } from '@angular/router';
+
+        imports: [
+          BrowserModule,
+          AppRoutingModule,
+          BrowserAnimationsModule,
+          RouterModule
+        ],
+      ```
+
+      ​
+
+   3. app-routing.module.ts에 **routing할 path와 component를 작성하여 넣어준다**
+
+      ```typescript
+      import { NgModule } from '@angular/core';
+      import { RouterModule, Routes } from '@angular/router';
+      import { IntroSection1Component } from './intro/intro-section1/intro-section1.component';
+      import { Section1Component } from './section1/section1.component';
+      const routes: Routes = [
+        {path:'', redirectTo:'intro', pathMatch: 'full'},
+        {path:'', component: IntroSection1Component},
+        {path:'service', component: Section1Component},
+      ];
+      ```
+
+   4. routing할 html에 <router-outlet>을 넣어준다
+
+
+
+### 또 추가적으로 버튼 클릭시 routerLink로 옮기는 법
+
+```html
+	<li>
+	  <a routerLink="">
+        	회사소개
+      </a>
+    </li>
+    <li>
+      <a routerLink="service">
+        서비스 소개
+      </a>
+    </li>
+
+a태그를 만든 후 routerLink="app-routing.module.ts에서 작성한 path명"
+을 달아준다
+```
+
+이거면 라우팅 끝
+
+
+
+### 애니메이션 넣기
+
+1. 애니메이션 모듈 활성화하기
+
+   ```typescript
+   //app.module.ts
+   import { NgModule } from '@angular/core';
+   import { BrowserModule } from '@angular/platform-browser';
+   import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+   @NgModule({
+     imports: [
+       BrowserModule,
+       BrowserAnimationsModule
+     ],
+     declarations: [ ],
+     bootstrap: [ ]
+   })
+   export class AppModule { }
+
+   ```
+
+2. 컴포넌트 파일에 애니메이션 기능 로드하기
+
+   ```
+   //사용할 component.ts
+   import { Component, HostBinding } from '@angular/core';
+   import {
+     trigger,
+     state,
+     style,
+     animate,
+     transition,
+     // ...
+   } from '@angular/animations';
+   ```
+
+3. 애니메이션 메타데이터 프로퍼티 추가하기
+
+   ```typescript
+   //사용할 component.ts
+   @Component({
+     selector: 'app-root',
+     templateUrl: 'app.component.html',
+     styleUrls: ['app.component.css'],
+     animations: [
+       // 애니메이션 트리거는 여기에 작성합니다.
+     ]
+   })
+   ```
+
+4. animations라는 배열에, **trigger** **state**  **style**  **transition** **animate** 넣고 정의하기
+
+   ```typescript
+   // 사용할 component.ts
+   @Component({
+     selector: 'app-intro-section1',
+     animations: [
+       trigger('openClose', [
+         state('open', style({
+           height: '200px',
+           opacity: 1,
+           backgroundColor: 'yellow'
+         })),
+         state('closed', style({
+           height: '100px',
+           opacity: 0.8,
+           backgroundColor: 'blue'
+         })),
+         transition('open => closed', [
+           animate('1s')
+         ]),
+
+         transition('closed => open', [
+           animate('0.5s')
+         ])
+       ])
+     ],
+     templateUrl: './intro-section1.component.html',
+     styleUrls: ['./intro-section1.component.scss'],
+
+   })
+   ```
+
+5. html 템플릿과 연결하기
+
+   ```html
+   // 사용할 component.html
+   <nav>
+     <button type="button" (click)="toggle()">Toggle Open/Close</button>
+   </nav>
+
+   <div [@openClose]="isOpen ? 'open' : 'closed'" class="open-close-container">
+     <p>The box is now {{ isOpen ? 'Open' : 'Closed' }}!</p>
+   </div>
+
+   // 형태는 <div>[@trigger이름]="표현식"<div>
+   ```
+
+6. 추가적으로 html과 양방향 바인딩을 하여, 에니메이션을 작동 할 수 있게함
+
+   ```typescript
+   // 사용할 component.ts
+   export class IntroSection1Component {
+     isOpen = true;
+
+     toggle() {
+       this.isOpen = !this.isOpen;
+     }
+   }
+   ```
+
+끝
+
